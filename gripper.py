@@ -19,6 +19,9 @@ class Gripper:
         self.default_x, self.default_y = config["default"]["vision_coords"]["x"], config["default"]["vision_coords"]["y"]
         # print(self.joint_speed, self.default_x, self.default_y)
 
+        # Connect with the gripper (Edit config.yaml to change address)
+        self.gripper_connection()
+
     def gripper_connection(self):
         # Open a socket for controlling the gripper
         self.gripper_fd = socket(AF_INET, SOCK_STREAM)

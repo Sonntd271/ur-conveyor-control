@@ -20,6 +20,10 @@ class Controller:
         self.default_x, self.default_y = config["default"]["vision_coords"]["x"], config["default"]["vision_coords"]["y"]
         print(self.joint_speed, self.default_x, self.default_y)
 
+        # Connect with the robot and vision system(Edit config.yaml to change address)
+        self.robot_connection()
+        self.ni_connection()
+
         # Move robot to home position
         self.robot_to_home()
 
