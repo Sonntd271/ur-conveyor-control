@@ -2,7 +2,7 @@ from socket import *
 import time
 import math
 import yaml
-from utils import encode_with_newline
+from utils import encode_with_newline, prettify_decorator
 
 config = yaml.safe_load(open("config.yaml"))
 # print(config)
@@ -22,7 +22,11 @@ class Gripper:
         # Connect with the gripper (Edit config.yaml to change address)
         self.gripper_connection()
 
+    @prettify_decorator
     def gripper_connection(self):
+        '''
+        Connect to gripper
+        '''
         # Open a socket for controlling the gripper
         self.gripper_fd = socket(AF_INET, SOCK_STREAM)
         self.gripper_fd.connect(self.gripper_addr)
@@ -43,8 +47,12 @@ class Gripper:
                 self.gripper_fd.send(encode_with_newline(cmd))
             print("Gripper activated")
 
+    @prettify_decorator
     def grip_control(self, value):
-        # Release value = 0, Grab value = 255
+        '''
+        Control gripping mechanism of the gripper,
+        Release value = 0, Grab value = 255
+        '''
         if value == 0 or value == 255:
             self.gripper_fd.send(encode_with_newline(f"SET POS {value}"))
         time.sleep(1)
@@ -53,6 +61,10 @@ class Gripper:
         
         recv_buf = str(self.gripper_fd.recv(10), "UTF-8")
         print(f"Gripper position = {recv_buf}")
+
+    @prettify_decorator
+    def terminate(self):
+        self.gripper_fd.close()
 
 
 if __name__ == "__main__":
