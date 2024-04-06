@@ -1,6 +1,5 @@
 from socket import *
 import time
-import math
 import yaml
 from utils import encode_with_newline, prettify_decorator, extract_coords
 
