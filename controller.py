@@ -124,6 +124,8 @@ class Controller:
                 continue
             print(f"Extracted coordinates (x, y, rz): {self.ni_coords}")
             break
+
+        return self.ni_coords
         
 
     # Error: Could not convert str to float when no detection

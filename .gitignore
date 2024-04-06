@@ -1,4 +1,9 @@
-venv/
-config.yaml
+# Cache
 __pycache__/
+
+# Folders
+venv/
+
+# Files
+config.yaml
 test.py

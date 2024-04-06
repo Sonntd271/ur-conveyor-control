@@ -4,7 +4,7 @@ from socket import *
 from utils import encode_with_newline, prettify_decorator
 
 config = yaml.safe_load(open("config.yaml"))
-print(config)
+# print(config)
 
 
 class Conveyor:
