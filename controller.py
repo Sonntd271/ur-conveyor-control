@@ -12,12 +12,12 @@ class Controller:
         # Declare addresses for connection
         self.robot_addr = (config["robot"]["ip"], config["robot"]["port"])
         self.ni_addr = (config["ni"]["ip"], config["ni"]["port"])
-        print(self.robot_addr, self.ni_addr)
+        # print(self.robot_addr, self.ni_addr)
 
         # Declare default variables
         self.joint_speed = config["default"]["joint_speed"]
         self.default_x, self.default_y = config["default"]["vision_coords"]["x"], config["default"]["vision_coords"]["y"]
-        print(self.joint_speed, self.default_x, self.default_y)
+        # print(self.joint_speed, self.default_x, self.default_y)
 
         # Connect with the robot and vision system(Edit config.yaml to change address)
         self.robot_connection()

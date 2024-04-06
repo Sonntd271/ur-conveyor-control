@@ -4,9 +4,9 @@ def encode_with_newline(input_string):
     return f"{input_string}\n".encode()
 
 def prettify_decorator(function):
-    def wrapper():
+    def wrapper(*args: any, **kwargs: any): # x for self
         print(f"====={function.__name__}=====")
-        print(function())
+        function(*args, **kwargs)
         print()
     return wrapper
 
