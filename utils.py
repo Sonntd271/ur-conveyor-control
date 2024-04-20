@@ -11,6 +11,7 @@ def prettify_decorator(function):
     return wrapper
 
 def extract_coords(coords):
+    coords = coords.split("]")[0]
     coords = coords.replace("[", "").replace("]", "").split(",")
     if "" in coords:
         return False

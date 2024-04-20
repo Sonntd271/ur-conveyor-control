@@ -35,8 +35,7 @@ class Gripper:
         if str(self.gripper_fd.recv(10), "UTF-8"):
             self.gripper_fd.send(encode_with_newline("SET ACT 1"))
             print(str(self.gripper_fd.recv(10), "UTF-8"))
-            time.sleep(3)
-            
+
             gripper_commands = [
                 "SET GTO 1",
                 "SET SPE 255",
@@ -46,6 +45,9 @@ class Gripper:
                 self.gripper_fd.send(encode_with_newline(cmd))
             print("Gripper activated")
 
+        # Ensure release
+        self.grip_control(0)
+
     @prettify_decorator
     def grip_control(self, value):
         '''
@@ -54,7 +56,7 @@ class Gripper:
         '''
         if value == 0 or value == 255:
             self.gripper_fd.send(encode_with_newline(f"SET POS {value}"))
-        time.sleep(1)
+        time.sleep(0.5)
         _ = str(self.gripper_fd.recv(10), "UTF-8")
         self.gripper_fd.send(encode_with_newline("GET POS"))
         

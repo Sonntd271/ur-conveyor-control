@@ -45,20 +45,23 @@ class Conveyor:
         '''
         Control the conveyor with speed (mm/s) and duration (s)
         '''
-        # with self.conveyor_fd:
         if speed == -1:
             speed = self.conveyor_speed
         if duration == -1:
             duration = self.conveyor_duration
         self.conveyor_fd.send(encode_with_newline(f"set_vel,conv,{speed}"))
         print(f"Conveyor speed set to {speed} mm/s")
+        time.sleep(0.5)
 
         print(f"Moving conveyor forward for {duration} seconds")
         self.conveyor_fd.send(encode_with_newline("jog_fwd,conv,0"))
         time.sleep(duration)
-        print(f"Moving conveyor backward for {duration} seconds")
-        self.conveyor_fd.send(encode_with_newline("jog_bwd,conv,0"))
-        time.sleep(duration)
+
+        # temporary remove backwards
+        
+        # print(f"Moving conveyor backward for {duration} seconds")
+        # self.conveyor_fd.send(encode_with_newline("jog_bwd,conv,0"))
+        # time.sleep(duration)
 
         # Stop conveyor
         self.conveyor_fd.send(encode_with_newline("jog_stop,conv,0"))
@@ -74,3 +77,4 @@ class Conveyor:
 
 if __name__ == "__main__":
     conveyor = Conveyor()
+    conveyor.conveyor_control()

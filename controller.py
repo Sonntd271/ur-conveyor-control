@@ -12,7 +12,7 @@ class Controller:
         # Declare addresses for connection
         self.robot_addr = (config["robot"]["ip"], config["robot"]["port"])
         self.ni_addr = (config["ni"]["ip"], config["ni"]["port"])
-        # print(self.robot_addr, self.ni_addr)
+        print(self.robot_addr, self.ni_addr)
 
         # Declare default variables
         self.joint_speed = config["default"]["joint_speed"]
@@ -59,7 +59,7 @@ class Controller:
         # print(default_ur_coords, move_positions)
 
         # Send command to move UR to home position
-        move_cmd = encode_with_newline(f"movel(p{self.current_position})")
+        move_cmd = encode_with_newline(f"movel(p{self.current_position},0.5,0.5,0,0)")
         self.robot_fd.send(move_cmd)
         print(f"Command sent!: {move_cmd}")
         time.sleep(1)
@@ -72,26 +72,30 @@ class Controller:
         computing with the current pose.
         '''
         print(f"Moving UR to (x, y, z, rx, ry, rz): ({x}, {y}, {z}, {rx}, {ry}, {rz})")
+        gripper_to_cam = config["default"]["gripper_to_cam"] / 100
+
+        speed_offset = config["default"]["speed_offset"] / 100
         # Change (x, y, z) from cm to m
         x /= 100
         y /= 100
         z /= 100
 
         if mode == "man":
-            print("Moving manually...")
-            self.current_position[0] += x
-            self.current_position[1] += y
-            self.current_position[2] += z
-            self.current_position[3] += rx
-            self.current_position[4] += ry
-            self.current_position[5] += rz
+            default_ur_coords = config["default"]["ur_coords"]
+            print("Moving manually... NOTE: RELATIVE TO HOME POSITION")
+            self.current_position[0] = default_ur_coords["x"] + gripper_to_cam - speed_offset + y
+            self.current_position[1] = default_ur_coords["y"] - x
+            self.current_position[2] = z
+            # self.current_position[3] += rx
+            # self.current_position[4] += ry
+            # self.current_position[5] += rz
         elif mode == "rel":
             print("Moving relatively...")
         else:
             print("Invalid mode, skipping...")
 
         # Send command to move UR arm to the desired position
-        move_cmd = encode_with_newline(f"movel(p{self.current_position})")
+        move_cmd = encode_with_newline(f"movel(p{self.current_position},0.5,0.5,0,0)")
         self.robot_fd.send(move_cmd)
         print(f"Command sent!: {move_cmd}")
         time.sleep(1)
@@ -114,7 +118,7 @@ class Controller:
             # Receive data from vision system
             print("Sending start signal to CV system...")
             self.ni_fd.send(b'start!')
-            vision_data = self.ni_fd.recv(20)
+            vision_data = self.ni_fd.recv(20).decode()
             print(f"Received: {vision_data}")
             
             # Extract coordinates from vision data
@@ -123,13 +127,9 @@ class Controller:
                 print("Empty coords, skipping...")
                 continue
             print(f"Extracted coordinates (x, y, rz): {self.ni_coords}")
+            
+            # return self.ni_coords
             break
-
-        return self.ni_coords
-        
-
-    # Error: Could not convert str to float when no detection
-    # Move robot relatively
     
     @prettify_decorator
     def terminate(self):
